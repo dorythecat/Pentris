@@ -31,8 +31,8 @@ const fGeometry = new THREE.ShapeGeometry(fShape);
 
 const iShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
-    new THREE.Vector2(0, 4),
-    new THREE.Vector2(1, 4),
+    new THREE.Vector2(0, 5),
+    new THREE.Vector2(1, 5),
     new THREE.Vector2(1, 0)
 ]);
 const iGeometry = new THREE.ShapeGeometry(iShape);
