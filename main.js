@@ -59,27 +59,41 @@ const nShape = new THREE.Shape().setFromPoints([
 ]);
 const nGeometry = new THREE.ShapeGeometry(nShape);
 
+const pShape = new THREE.Shape().setFromPoints([
+    new THREE.Vector2(0, 0),
+    new THREE.Vector2(0, 3),
+    new THREE.Vector2(2, 3),
+    new THREE.Vector2(2, 1),
+    new THREE.Vector2(1, 1),
+    new THREE.Vector2(1, 0)
+]);
+const pGeometry = new THREE.ShapeGeometry(pShape);
+
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 const fPentomino = new THREE.Mesh(fGeometry, material);
 const iPentomino = new THREE.Mesh(iGeometry, material);
 const lPentomino = new THREE.Mesh(lGeometry, material);
 const nPentomino = new THREE.Mesh(nGeometry, material);
+const pPentomino = new THREE.Mesh(pGeometry, material);
 
 fPentomino.scale.set(0.1, 0.1, 0.1);
 iPentomino.scale.set(0.1, 0.1, 0.1);
 lPentomino.scale.set(0.1, 0.1, 0.1);
 nPentomino.scale.set(0.1, 0.1, 0.1);
+pPentomino.scale.set(0.1, 0.1, 0.1);
 
 fPentomino.position.x = -2.5;
 iPentomino.position.x = -2.0;
 lPentomino.position.x = -1.5;
 nPentomino.position.x = -1.0;
+pPentomino.position.x = -0.5;
 
 scene.add(fPentomino);
 scene.add(iPentomino);
 scene.add(lPentomino);
 scene.add(nPentomino);
+scene.add(pPentomino);
 
 camera.position.z = 5;
 
