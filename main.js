@@ -14,6 +14,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Define the shape of pentominos
 // Name of pentominos from https://en.wikipedia.org/wiki/Pentomino
 const fShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -145,6 +146,7 @@ const zShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 2)
 ]);
 
+// Basic material for all of the pentominos
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 const shapes = [
@@ -161,6 +163,8 @@ const shapes = [
     yShape,
     zShape
 ];
+
+// Generate pentominos from given shapes
 let pentominos = [];
 let i = 0;
 for (let shape of shapes) {
@@ -174,11 +178,13 @@ for (let shape of shapes) {
 
 camera.position.z = 5;
 
+// Main loop
 function animate() {
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
 
+// Handle keyboard input
 function onKeyDown(event) {
     if (event.key === "ArrowLeft") {
         for (let pentomino of pentominos) {
