@@ -27,7 +27,6 @@ const fShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 2),
     new THREE.Vector2(1, 0)
 ]);
-const fGeometry = new THREE.ShapeGeometry(fShape);
 
 const iShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -35,7 +34,6 @@ const iShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 5),
     new THREE.Vector2(1, 0)
 ]);
-const iGeometry = new THREE.ShapeGeometry(iShape);
 
 const lShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -45,7 +43,6 @@ const lShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(2, 1),
     new THREE.Vector2(2, 0)
 ]);
-const lGeometry = new THREE.ShapeGeometry(lShape);
 
 const nShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -57,7 +54,6 @@ const nShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 1),
     new THREE.Vector2(1, 0)
 ]);
-const nGeometry = new THREE.ShapeGeometry(nShape);
 
 const pShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -67,7 +63,6 @@ const pShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 1),
     new THREE.Vector2(1, 0)
 ]);
-const pGeometry = new THREE.ShapeGeometry(pShape);
 
 const tShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -79,7 +74,6 @@ const tShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 2),
     new THREE.Vector2(1, 0)
 ]);
-const tGeometry = new THREE.ShapeGeometry(tShape);
 
 const uShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -91,7 +85,6 @@ const uShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(3, 2),
     new THREE.Vector2(3, 0)
 ]);
-const uGeometry = new THREE.ShapeGeometry(uShape);
 
 const vShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -101,7 +94,6 @@ const vShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(3, 1),
     new THREE.Vector2(3, 0)
 ]);
-const vGeometry = new THREE.ShapeGeometry(vShape);
 
 const wShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -115,7 +107,6 @@ const wShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(2, 1),
     new THREE.Vector2(2, 0),
 ]);
-const wGeometry = new THREE.ShapeGeometry(wShape);
 
 const xShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -131,7 +122,6 @@ const xShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 1),
     new THREE.Vector2(1, 0)
 ]);
-const xGeometry = new THREE.ShapeGeometry(xShape);
 
 const yShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -143,7 +133,6 @@ const yShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 2),
     new THREE.Vector2(1, 0)
 ]);
-const yGeometry = new THREE.ShapeGeometry(yShape);
 
 const zShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 0),
@@ -155,28 +144,27 @@ const zShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(-1, 2),
     new THREE.Vector2(0, 2)
 ]);
-const zGeometry = new THREE.ShapeGeometry(zShape);
 
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
-const geometries = [
-    fGeometry,
-    iGeometry,
-    lGeometry,
-    nGeometry,
-    pGeometry,
-    tGeometry,
-    uGeometry,
-    vGeometry,
-    wGeometry,
-    xGeometry,
-    yGeometry,
-    zGeometry
+const shapes = [
+    fShape,
+    iShape,
+    lShape,
+    nShape,
+    pShape,
+    tShape,
+    uShape,
+    vShape,
+    wShape,
+    xShape,
+    yShape,
+    zShape
 ];
 let pentominos = [];
 let i = 0;
-for (let geom of geometries) {
-    const mesh = new THREE.Mesh(geom, material);
+for (let shape of shapes) {
+    const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
     mesh.scale.set(0.1, 0.1, 0.1);
     mesh.position.x = -2.5 + 0.5 * i;
     i++;
