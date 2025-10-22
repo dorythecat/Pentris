@@ -146,9 +146,6 @@ const zShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(0, 2)
 ]);
 
-// Basic material for all of the pentominos
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-
 const shapes = [
     fShape,
     iShape,
@@ -168,6 +165,9 @@ const shapes = [
 let pentominos = [];
 let i = 0;
 for (let shape of shapes) {
+    const material = new THREE.MeshBasicMaterial({
+        color: '#' + ((1 << 24) + (i * 0xabcdef11) % 0xffffff).toString(16).slice(1)
+    });
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
     mesh.scale.set(0.1, 0.1, 0.1);
     mesh.position.x = -2.5 + 0.5 * i++;
