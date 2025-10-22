@@ -159,57 +159,30 @@ const zGeometry = new THREE.ShapeGeometry(zShape);
 
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
-const fPentomino = new THREE.Mesh(fGeometry, material);
-const iPentomino = new THREE.Mesh(iGeometry, material);
-const lPentomino = new THREE.Mesh(lGeometry, material);
-const nPentomino = new THREE.Mesh(nGeometry, material);
-const pPentomino = new THREE.Mesh(pGeometry, material);
-const tPentomino = new THREE.Mesh(tGeometry, material);
-const uPentomino = new THREE.Mesh(uGeometry, material);
-const vPentomino = new THREE.Mesh(vGeometry, material);
-const wPentomino = new THREE.Mesh(wGeometry, material);
-const xPentomino = new THREE.Mesh(xGeometry, material);
-const yPentomino = new THREE.Mesh(yGeometry, material);
-const zPentomino = new THREE.Mesh(zGeometry, material);
-
-fPentomino.scale.set(0.1, 0.1, 0.1);
-iPentomino.scale.set(0.1, 0.1, 0.1);
-lPentomino.scale.set(0.1, 0.1, 0.1);
-nPentomino.scale.set(0.1, 0.1, 0.1);
-pPentomino.scale.set(0.1, 0.1, 0.1);
-tPentomino.scale.set(0.1, 0.1, 0.1);
-uPentomino.scale.set(0.1, 0.1, 0.1);
-vPentomino.scale.set(0.1, 0.1, 0.1);
-wPentomino.scale.set(0.1, 0.1, 0.1);
-xPentomino.scale.set(0.1, 0.1, 0.1);
-yPentomino.scale.set(0.1, 0.1, 0.1);
-zPentomino.scale.set(0.1, 0.1, 0.1);
-
-fPentomino.position.x = -2.5;
-iPentomino.position.x = -2.0;
-lPentomino.position.x = -1.5;
-nPentomino.position.x = -1.0;
-pPentomino.position.x = -0.5;
-tPentomino.position.x = 0.0;
-uPentomino.position.x = 0.5;
-vPentomino.position.x = 1.0;
-wPentomino.position.x = 1.5;
-xPentomino.position.x = 2.0;
-yPentomino.position.x = 2.5;
-zPentomino.position.x = 3.0;
-
-scene.add(fPentomino);
-scene.add(iPentomino);
-scene.add(lPentomino);
-scene.add(nPentomino);
-scene.add(pPentomino);
-scene.add(tPentomino);
-scene.add(uPentomino);
-scene.add(vPentomino);
-scene.add(wPentomino);
-scene.add(xPentomino);
-scene.add(yPentomino);
-scene.add(zPentomino);
+const geometries = [
+    fGeometry,
+    iGeometry,
+    lGeometry,
+    nGeometry,
+    pGeometry,
+    tGeometry,
+    uGeometry,
+    vGeometry,
+    wGeometry,
+    xGeometry,
+    yGeometry,
+    zGeometry
+];
+let pentominos = [];
+let i = 0;
+for (let geom of geometries) {
+    const mesh = new THREE.Mesh(geom, material);
+    mesh.scale.set(0.1, 0.1, 0.1);
+    mesh.position.x = -2.5 + 0.5 * i;
+    i++;
+    scene.add(mesh);
+    pentominos.push(mesh);
+}
 
 camera.position.z = 5;
 
