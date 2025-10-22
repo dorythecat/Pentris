@@ -170,8 +170,7 @@ let i = 0;
 for (let shape of shapes) {
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
     mesh.scale.set(0.1, 0.1, 0.1);
-    mesh.position.x = -2.5 + 0.5 * i;
-    i++;
+    mesh.position.x = -2.5 + 0.5 * i++;
     scene.add(mesh);
     pentominos.push(mesh);
 }
@@ -187,13 +186,9 @@ renderer.setAnimationLoop(animate);
 // Handle keyboard input
 function onKeyDown(event) {
     if (event.key === "ArrowLeft") {
-        for (let pentomino of pentominos) {
-            pentomino.rotation.z += Math.PI / 2;
-        }
+        for (let pentomino of pentominos) pentomino.rotation.z += Math.PI / 2;
     } else if (event.key === "ArrowRight") {
-        for (let pentomino of pentominos) {
-            pentomino.rotation.z -= Math.PI / 2;
-        }
+        for (let pentomino of pentominos) pentomino.rotation.z -= Math.PI / 2;
     }
 }
 document.addEventListener('keydown', onKeyDown);
