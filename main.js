@@ -169,7 +169,7 @@ for (let shape of shapes) {
         color: '#' + ((1 << 24) + (i * 0xabcdef11) % 0xffffff).toString(16).slice(1)
     });
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
-    mesh.scale.set(0.1, 0.1, 0.1);
+    mesh.scale.set(0.25, 0.25, 0.25);
     mesh.position.x = -2.5 + 0.5 * i++;
     scene.add(mesh);
     pentominos.push(mesh);
@@ -178,22 +178,22 @@ for (let shape of shapes) {
 // Generate the grid
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
 const vLine = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector2(0, -2.5),
-    new THREE.Vector2(0, 2.5)
+    new THREE.Vector2(0, -3.75),
+    new THREE.Vector2(0, 3.75)
 ]);
-for (i = 0; i <= 30; i++) {
+for (i = 0; i <= 20; i++) {
     const mesh = new THREE.Line(vLine, lineMaterial);
-    mesh.position.x = -1.5 + i / 10;
+    mesh.position.x = -2.5 + i / 4;
     scene.add(mesh);
 }
 
 const hLine = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector2(-1.5, 0),
-    new THREE.Vector2(1.5, 0)
+    new THREE.Vector2(-2.5, 0),
+    new THREE.Vector2(2.5, 0)
 ]);
-for (i = 0; i <= 50; i++) {
+for (i = 0; i <= 30; i++) {
     const mesh = new THREE.Line(hLine, lineMaterial);
-    mesh.position.y = -2.5 + i / 10;
+    mesh.position.y = -3.75 + i / 4;
     scene.add(mesh);
 }
 
