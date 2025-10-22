@@ -175,6 +175,31 @@ for (let shape of shapes) {
     pentominos.push(mesh);
 }
 
+// Generate the grid
+const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+for (i = 0; i < 31; i++) {
+    const line = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector2(0, 0),
+        new THREE.Vector2(0, 5)
+    ]);
+    const mesh = new THREE.Line(line, lineMaterial);
+    mesh.position.x = -1.5 + i / 10;
+    mesh.position.y = -1.5;
+    scene.add(mesh);
+}
+
+for (i = 0; i < 51; i++) {
+    const line = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector2(0, 0),
+        new THREE.Vector2(3, 0)
+    ]);
+    const mesh = new THREE.Line(line, lineMaterial);
+    mesh.position.x = -1.5;
+    mesh.position.y = -1.5 + i / 10;
+    scene.add(mesh);
+}
+
+// Position the camera
 camera.position.z = 5;
 
 // Main loop
