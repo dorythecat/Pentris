@@ -177,7 +177,7 @@ for (let shape of shapes) {
 
 // Generate the grid
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-for (i = 0; i < 31; i++) {
+for (i = 0; i <= 30; i++) {
     const line = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector2(0, 0),
         new THREE.Vector2(0, 5)
@@ -188,7 +188,7 @@ for (i = 0; i < 31; i++) {
     scene.add(mesh);
 }
 
-for (i = 0; i < 51; i++) {
+for (i = 0; i <= 50; i++) {
     const line = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector2(0, 0),
         new THREE.Vector2(3, 0)
@@ -199,8 +199,8 @@ for (i = 0; i < 51; i++) {
     scene.add(mesh);
 }
 
-// Position the camera
-camera.position.z = 5;
+// Position the camera so we can actually see stuff
+camera.position.z = 1;
 
 // Main loop
 function animate() {
