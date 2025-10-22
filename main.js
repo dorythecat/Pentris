@@ -190,3 +190,16 @@ function animate() {
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
+
+function onKeyDown(event) {
+    if (event.key === "ArrowLeft") {
+        for (let pentomino of pentominos) {
+            pentomino.rotation.z += Math.PI / 2;
+        }
+    } else if (event.key === "ArrowRight") {
+        for (let pentomino of pentominos) {
+            pentomino.rotation.z -= Math.PI / 2;
+        }
+    }
+}
+document.addEventListener('keydown', onKeyDown);
