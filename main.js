@@ -177,25 +177,23 @@ for (let shape of shapes) {
 
 // Generate the grid
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+const vLine = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector2(0, -2.5),
+    new THREE.Vector2(0, 2.5)
+]);
 for (i = 0; i <= 30; i++) {
-    const line = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector2(0, 0),
-        new THREE.Vector2(0, 5)
-    ]);
-    const mesh = new THREE.Line(line, lineMaterial);
+    const mesh = new THREE.Line(vLine, lineMaterial);
     mesh.position.x = -1.5 + i / 10;
-    mesh.position.y = -1.5;
     scene.add(mesh);
 }
 
+const hLine = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector2(-1.5, 0),
+    new THREE.Vector2(1.5, 0)
+]);
 for (i = 0; i <= 50; i++) {
-    const line = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector2(0, 0),
-        new THREE.Vector2(3, 0)
-    ]);
-    const mesh = new THREE.Line(line, lineMaterial);
-    mesh.position.x = -1.5;
-    mesh.position.y = -1.5 + i / 10;
+    const mesh = new THREE.Line(hLine, lineMaterial);
+    mesh.position.y = -2.5 + i / 10;
     scene.add(mesh);
 }
 
