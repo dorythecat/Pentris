@@ -103,6 +103,20 @@ const vShape = new THREE.Shape().setFromPoints([
 ]);
 const vGeometry = new THREE.ShapeGeometry(vShape);
 
+const wShape = new THREE.Shape().setFromPoints([
+    new THREE.Vector2(0, 0),
+    new THREE.Vector2(0, 1),
+    new THREE.Vector2(-1, 1),
+    new THREE.Vector2(-1, 3),
+    new THREE.Vector2(0, 3),
+    new THREE.Vector2(0, 2),
+    new THREE.Vector2(1, 2),
+    new THREE.Vector2(1, 1),
+    new THREE.Vector2(2, 1),
+    new THREE.Vector2(2, 0),
+]);
+const wGeometry = new THREE.ShapeGeometry(wShape);
+
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 const fPentomino = new THREE.Mesh(fGeometry, material);
@@ -113,6 +127,7 @@ const pPentomino = new THREE.Mesh(pGeometry, material);
 const tPentomino = new THREE.Mesh(tGeometry, material);
 const uPentomino = new THREE.Mesh(uGeometry, material);
 const vPentomino = new THREE.Mesh(vGeometry, material);
+const wPentomino = new THREE.Mesh(wGeometry, material);
 
 fPentomino.scale.set(0.1, 0.1, 0.1);
 iPentomino.scale.set(0.1, 0.1, 0.1);
@@ -122,6 +137,7 @@ pPentomino.scale.set(0.1, 0.1, 0.1);
 tPentomino.scale.set(0.1, 0.1, 0.1);
 uPentomino.scale.set(0.1, 0.1, 0.1);
 vPentomino.scale.set(0.1, 0.1, 0.1);
+wPentomino.scale.set(0.1, 0.1, 0.1);
 
 fPentomino.position.x = -2.5;
 iPentomino.position.x = -2.0;
@@ -131,6 +147,7 @@ pPentomino.position.x = -0.5;
 tPentomino.position.x = 0.0;
 uPentomino.position.x = 0.5;
 vPentomino.position.x = 1.0;
+wPentomino.position.x = 1.5;
 
 scene.add(fPentomino);
 scene.add(iPentomino);
@@ -140,6 +157,7 @@ scene.add(pPentomino);
 scene.add(tPentomino);
 scene.add(uPentomino);
 scene.add(vPentomino);
+scene.add(wPentomino);
 
 camera.position.z = 5;
 
