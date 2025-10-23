@@ -203,6 +203,31 @@ for (i = 0; i <= 30; i++) {
 // Position the camera so we can actually see stuff
 camera.position.z = 1;
 
+// Helper collision functions
+function pentominoOutOfGrid(pentomino) {
+    const box = new THREE.Box3().setFromObject(pentomino);
+    return box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75;
+}
+
+function checkPentominoCollision(a, b) {
+    const aBox = new THREE.Box3().setFromObject(a);
+    const bBox = new THREE.Box3().setFromObject(b);
+    if (aBox.intersectsBox(bBox)) {
+        const aPoints = a.geometry.attributes.position.array;
+        for (let i = 0; i < aPoints.length; i += 3) {
+            const point = new THREE.Vector3(aPoints[i], aPoints[i + 1], aPoints[i + 2]);
+            point.applyMatrix4(a.matrixWorld);
+            if (b.geometry.containsPoint(point)) return true;
+        }
+        const bPoints = b.geometry.attributes.position.array;
+        for (let i = 0; i < bPoints.length; i += 3) {
+            const point = new THREE.Vector3(bPoints[i], bPoints[i + 1], bPoints[i + 2]);
+            point.applyMatrix4(b.matrixWorld);
+            if (a.geometry.containsPoint(point)) return true;
+        }
+    } return false;
+}
+
 // Main loop
 let pentomino = null;
 function animate() {
@@ -221,9 +246,21 @@ renderer.setAnimationLoop(animate);
 // Handle keyboard input
 function onKeyDown(event) {
     if (!pentomino) return; // If there's no pentomino currently, we have nothing to do
-    if (event.key === "ArrowLeft") pentomino.position.x -= 0.25;
-    else if (event.key === "ArrowRight") pentomino.position.x += 0.25;
-    else if (event.key === "ArrowUp") pentomino.rotation.z += Math.PI / 2;
-    else if (event.key === "ArrowDown") pentomino.position.y -= 0.25;
+    if (event.key === "ArrowLeft") {
+        pentomino.position.x -= 0.25;
+        if (pentominoOutOfGrid(pentomino)) pentomino.position.x += 0.25;
+    }
+    else if (event.key === "ArrowRight") {
+        pentomino.position.x += 0.25;
+        if (pentominoOutOfGrid(pentomino)) pentomino.position.x -= 0.25;
+    }
+    else if (event.key === "ArrowUp") {
+        pentomino.rotation.z += Math.PI / 2;
+        if (pentominoOutOfGrid(pentomino)) pentomino.rotation.z -= Math.PI / 2;
+    }
+    else if (event.key === "ArrowDown") {
+        pentomino.position.y -= 0.25;
+        if (pentominoOutOfGrid(pentomino)) pentomino.position.y += 0.25;
+    }
 }
 document.addEventListener('keydown', onKeyDown);
