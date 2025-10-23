@@ -220,10 +220,10 @@ renderer.setAnimationLoop(animate);
 
 // Handle keyboard input
 function onKeyDown(event) {
-    if (event.key === "ArrowLeft") {
-        for (let pentomino of pentominos) pentomino.rotation.z += Math.PI / 2;
-    } else if (event.key === "ArrowRight") {
-        for (let pentomino of pentominos) pentomino.rotation.z -= Math.PI / 2;
-    }
+    if (!pentomino) return; // If there's no pentomino currently, we have nothing to do
+    if (event.key === "ArrowLeft") pentomino.position.x -= 0.25;
+    else if (event.key === "ArrowRight") pentomino.position.x += 0.25;
+    else if (event.key === "ArrowUp") pentomino.rotation.z += Math.PI / 2;
+    else if (event.key === "ArrowDown") pentomino.position.y -= 0.25;
 }
 document.addEventListener('keydown', onKeyDown);
