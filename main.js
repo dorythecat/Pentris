@@ -245,6 +245,7 @@ function onKeyDown(event) {
     }
     else if (event.key === "ArrowUp") {
         pentomino.rotation.z += Math.PI / 2;
+        pentomino.rotation.z %= 2 * Math.PI;
         lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
     }
     else if (event.key === "ArrowDown") {
