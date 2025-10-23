@@ -166,12 +166,15 @@ let pentominos = [];
 let i = 0;
 for (let shape of shapes) {
     const material = new THREE.MeshBasicMaterial({
-        color: '#' + ((1 << 24) + (i * 0xabcdef11) % 0xffffff).toString(16).slice(1)
+        color: '#' + ((1 << 24) + (i++ * 0xabcdef11) % 0xffffff).toString(16).slice(1)
     });
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
     mesh.scale.set(0.25, 0.25, 0.25);
-    mesh.position.x = -2.5 + 0.5 * i++;
-    scene.add(mesh);
+    // Center on X
+    mesh.geometry.computeBoundingBox();
+    const xOffset = (mesh.geometry.boundingBox.max.x - mesh.geometry.boundingBox.min.x) / 2;
+    mesh.position.x = -Math.floor(xOffset) * 0.25;
+    mesh.position.y = 2.5;
     pentominos.push(mesh);
 }
 
@@ -201,7 +204,16 @@ for (i = 0; i <= 30; i++) {
 camera.position.z = 1;
 
 // Main loop
+let pentomino = null;
 function animate() {
+    // Generate pentomino
+    if (pentomino === null) {
+        pentomino = pentominos[Math.floor(Math.random() * pentominos.length)];
+        scene.add(pentomino);
+        renderer.render(scene, camera);
+        return;
+    }
+
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
