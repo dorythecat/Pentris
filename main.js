@@ -2,12 +2,9 @@ import * as THREE from 'three';
 
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(
-    -window.innerWidth / 200,
-    window.innerWidth / 200,
-    window.innerHeight / 200,
-    -window.innerHeight / 200,
-    0.1,
-    10
+    -window.innerWidth / 200, window.innerWidth / 200,
+    window.innerHeight / 200, -window.innerHeight / 200,
+    1, 2
 );
 
 const renderer = new THREE.WebGLRenderer();
@@ -147,18 +144,8 @@ const zShape = new THREE.Shape().setFromPoints([
 ]);
 
 const shapes = [
-    fShape,
-    iShape,
-    lShape,
-    nShape,
-    pShape,
-    tShape,
-    uShape,
-    vShape,
-    wShape,
-    xShape,
-    yShape,
-    zShape
+    fShape, iShape, lShape, nShape, pShape, tShape,
+    uShape, vShape, wShape, xShape, yShape, zShape
 ];
 
 // Generate pentominos from given shapes
@@ -374,9 +361,7 @@ function animate() {
             // Add score
             score += 10;
         }
-    }
-
-    renderer.render(scene, camera);
+    } renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
 
