@@ -170,10 +170,7 @@ for (let shape of shapes) {
     });
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
     mesh.scale.set(0.25, 0.25, 0.25);
-    // Center on X
     mesh.geometry.computeBoundingBox();
-    const xOffset = (mesh.geometry.boundingBox.max.x - mesh.geometry.boundingBox.min.x) / 2;
-    mesh.position.x = -Math.floor(xOffset) * 0.25;
     mesh.position.y = 2.5;
     pentominos.push(mesh);
 }
@@ -252,7 +249,7 @@ function pentominoCollides(pentomino, placedPentominos) {
 
 // Main loop
 let pentomino = null;
-let lastMotion = new THREE.Vector3(0, 0, 0);
+let lastMotion = new THREE.Vector3();
 let lastTime = 0;
 let placed = [];
 function animate() {
