@@ -212,6 +212,7 @@ function pentominoOutOfGrid(pentomino) {
 // Main loop
 let pentomino = null;
 let lastMotion = new THREE.Vector3(0, 0, 0);
+let lastTime = 0;
 function animate() {
     // Generate pentomino
     if (pentomino === null) {
@@ -221,11 +222,22 @@ function animate() {
         return;
     }
 
+    const currentTime = performance.now();
+    if (currentTime - lastTime > 250) {
+        // Move pentomino down every second
+        pentomino.position.y -= 0.25;
+        lastMotion = new THREE.Vector3(0, -0.25, 0);
+        lastTime = currentTime;
+    }
+
     if (pentominoOutOfGrid(pentomino)) {
         // Revert last motion if out of grid
         pentomino.position.x -= lastMotion.x;
         pentomino.position.y -= lastMotion.y;
         pentomino.rotation.z -= lastMotion.z;
+
+        // If the last motion was down, we need to lock the pentomino and generate a new one
+        if (lastMotion.y < 0) pentomino = null;
     }
 
     renderer.render(scene, camera);
