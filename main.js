@@ -269,6 +269,7 @@ function getCompletedRows(cellMeshMap) {
 }
 
 // Helper: Remove completed rows and drop above
+let score = 0;
 function clearRowsAndDrop(placed) {
     const cellMeshMap = getCellMeshMap(placed);
     const completedRows = getCompletedRows(cellMeshMap);
@@ -301,7 +302,10 @@ function clearRowsAndDrop(placed) {
                 const [, cy] = cell.split(',').map(Number);
                 return cy > iy;
             })) drop++;
-        } if (drop > 0) mesh.position.y -= CELL_SIZE * drop;
+        } if (drop > 0) {
+            mesh.position.y -= CELL_SIZE * drop;
+            score += drop * 100; // Increment score
+        }
     }
 }
 
@@ -335,7 +339,7 @@ function animate() {
 
         // If still colliding after revert, game over
         if (pentominoCollides(pentomino, placed) && pentomino.position.y === 2.5) {
-            alert("Game Over!");
+            alert("Game Over!\n\nScore: " + score);
 
             // Reset game
             for (let mesh of placed) scene.remove(mesh);
@@ -344,6 +348,7 @@ function animate() {
             pentomino = null;
             lastMotion.set(0, 0, 0);
             lastTime = 0;
+            score = 0;
             return;
         }
 
@@ -365,6 +370,9 @@ function animate() {
 
             // Clear completed rows
             clearRowsAndDrop(placed);
+
+            // Add score
+            score += 10;
         }
     }
 
