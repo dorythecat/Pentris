@@ -237,7 +237,22 @@ function animate() {
         pentomino.rotation.z -= lastMotion.z;
 
         // If the last motion was down, we need to lock the pentomino and generate a new one
-        if (lastMotion.y < 0) pentomino = null;
+        if (lastMotion.y < 0) {
+            const lockedPentomino = pentomino.clone(); // Clone the pentomino to lock it in place
+
+            // Reset pentomino to start position
+            pentomino.position.set(0, 2.5, 0);
+            pentomino.rotation.set(0, 0, 0);
+
+            // Remove pentomino from scene
+            scene.remove(pentomino);
+            pentomino = null;
+
+            // TODO: Check for completed rows
+
+            // Keep the locked pentomino in the scene
+            scene.add(lockedPentomino);
+        }
     }
 
     renderer.render(scene, camera);
