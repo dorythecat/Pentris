@@ -208,18 +208,19 @@ function pentominoOutOfGrid(pentomino) {
 
 const CELL_SIZE = 0.25;
 const Z_TEST_ORIGIN = 1; // ray origin z (above the pentomino plane)
-const EPS = 1e-6;
+const EPS = CELL_SIZE / 1000000; // small epsilon to avoid edge cases
 
+// Get grid cells occupied by a mesh
 function getOccupiedCells(mesh) {
     // Ensure world matrices are up-to-date
     mesh.updateMatrixWorld(true);
 
     // Compute world-space bounding box for the mesh
     const box = new THREE.Box3().setFromObject(mesh);
-    const minX = Math.floor((box.min.x + EPS) / CELL_SIZE);
-    const maxX = Math.floor((box.max.x - EPS) / CELL_SIZE);
-    const minY = Math.floor((box.min.y + EPS) / CELL_SIZE);
-    const maxY = Math.floor((box.max.y - EPS) / CELL_SIZE);
+    const minX = Math.floor(box.min.x / CELL_SIZE + EPS);
+    const maxX = Math.floor(box.max.x / CELL_SIZE - EPS);
+    const minY = Math.floor(box.min.y / CELL_SIZE + EPS);
+    const maxY = Math.floor(box.max.y / CELL_SIZE - EPS);
 
     const cells = new Set();
     for (let ix = minX; ix <= maxX; ix++) {
@@ -276,8 +277,8 @@ function clearRowsAndDrop(placed) {
     // Remove cells in completed rows
     const toRemove = new Set();
     for (let iy of completedRows) {
-        for (let ix = -10; ix <= 9; ix++) { // -2.5 to 2.25 in steps of 0.25
-            toRemove.add(`${ix},${iy}`);
+        for (let ix = 0; ix <= 19; ix++) { // -2.5 to 2.25 in steps of 0.25
+            toRemove.add(`${ix - 10},${iy}`);
         }
     }
 
