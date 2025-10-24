@@ -247,6 +247,63 @@ function pentominoCollides(pentomino, placedPentominos) {
     } return false;
 }
 
+// Helper: Map cell string to mesh reference
+function getCellMeshMap(placed) {
+    const cellMeshMap = new Map();
+    for (let mesh of placed) for (let cell of getOccupiedCells(mesh)) cellMeshMap.set(cell, mesh);
+    return cellMeshMap;
+}
+
+// Helper: Find completed rows
+function getCompletedRows(cellMeshMap) {
+    const rowCounts = {};
+    for (let cell of cellMeshMap.keys()) {
+        const [, iy] = cell.split(',').map(Number);
+        rowCounts[iy] = (rowCounts[iy] || 0) + 1;
+    }
+    // 20 columns per row (from -2.5 to 2.5 in steps of 0.25)
+    return Object.entries(rowCounts)
+        .filter(([_, count]) => count === 20)
+        .map(([iy]) => Number(iy));
+}
+
+// Helper: Remove completed rows and drop above
+function clearRowsAndDrop(placed) {
+    const cellMeshMap = getCellMeshMap(placed);
+    const completedRows = getCompletedRows(cellMeshMap);
+    if (completedRows.length === 0) return;
+
+    // Remove cells in completed rows
+    const toRemove = new Set();
+    for (let iy of completedRows) {
+        for (let ix = -10; ix <= 9; ix++) { // -2.5 to 2.25 in steps of 0.25
+            toRemove.add(`${ix},${iy}`);
+        }
+    }
+
+    // Remove meshes that only occupy cleared cells
+    for (let mesh of placed.slice()) {
+        const meshCells = getOccupiedCells(mesh);
+        if ([...meshCells].every(cell => toRemove.has(cell))) {
+            scene.remove(mesh);
+            placed.splice(placed.indexOf(mesh), 1);
+        }
+    }
+
+    // Drop meshes above cleared rows
+    for (let mesh of placed) {
+        const meshCells = getOccupiedCells(mesh);
+        let drop = 0;
+        for (let iy of completedRows) {
+            // If mesh is above cleared row, increment drop
+            if ([...meshCells].some(cell => {
+                const [, cy] = cell.split(',').map(Number);
+                return cy > iy;
+            })) drop++;
+        } if (drop > 0) mesh.position.y -= CELL_SIZE * drop;
+    }
+}
+
 // Main loop
 let pentomino = null;
 let lastMotion = new THREE.Vector3();
@@ -295,11 +352,12 @@ function animate() {
             scene.remove(pentomino);
             pentomino = null;
 
-            // TODO: Check for completed rows
-
             // Keep the locked pentomino in the scene
             placed.push(lockedPentomino);
             scene.add(lockedPentomino);
+
+            // Clear completed rows
+            clearRowsAndDrop(placed);
         }
     }
 
