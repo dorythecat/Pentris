@@ -2,12 +2,12 @@ import * as THREE from 'three';
 
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(
-    window.innerWidth / -200,
+    -window.innerWidth / 200,
     window.innerWidth / 200,
     window.innerHeight / 200,
-    window.innerHeight / -200,
+    -window.innerHeight / 200,
     0.1,
-    1000
+    10
 );
 
 const renderer = new THREE.WebGLRenderer();
@@ -17,7 +17,7 @@ document.body.appendChild(renderer.domElement);
 // Define the shape of pentominos
 // Name of pentominos from https://en.wikipedia.org/wiki/Pentomino
 const fShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 1),
     new THREE.Vector2(-1, 1),
     new THREE.Vector2(-1, 2),
@@ -30,14 +30,14 @@ const fShape = new THREE.Shape().setFromPoints([
 ]);
 
 const iShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 5),
     new THREE.Vector2(1, 5),
     new THREE.Vector2(1, 0)
 ]);
 
 const lShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 4),
     new THREE.Vector2(1, 4),
     new THREE.Vector2(1, 1),
@@ -46,7 +46,7 @@ const lShape = new THREE.Shape().setFromPoints([
 ]);
 
 const nShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 2),
     new THREE.Vector2(1, 2),
     new THREE.Vector2(1, 4),
@@ -57,7 +57,7 @@ const nShape = new THREE.Shape().setFromPoints([
 ]);
 
 const pShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 3),
     new THREE.Vector2(2, 3),
     new THREE.Vector2(2, 1),
@@ -66,7 +66,7 @@ const pShape = new THREE.Shape().setFromPoints([
 ]);
 
 const tShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 2),
     new THREE.Vector2(-1, 2),
     new THREE.Vector2(-1, 3),
@@ -77,7 +77,7 @@ const tShape = new THREE.Shape().setFromPoints([
 ]);
 
 const uShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 2),
     new THREE.Vector2(1, 2),
     new THREE.Vector2(1, 1),
@@ -88,7 +88,7 @@ const uShape = new THREE.Shape().setFromPoints([
 ]);
 
 const vShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 3),
     new THREE.Vector2(1, 3),
     new THREE.Vector2(1, 1),
@@ -97,7 +97,7 @@ const vShape = new THREE.Shape().setFromPoints([
 ]);
 
 const wShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 1),
     new THREE.Vector2(-1, 1),
     new THREE.Vector2(-1, 3),
@@ -110,7 +110,7 @@ const wShape = new THREE.Shape().setFromPoints([
 ]);
 
 const xShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 1),
     new THREE.Vector2(-1, 1),
     new THREE.Vector2(-1, 2),
@@ -125,7 +125,7 @@ const xShape = new THREE.Shape().setFromPoints([
 ]);
 
 const yShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(0, 4),
     new THREE.Vector2(1, 4),
     new THREE.Vector2(1, 3),
@@ -136,7 +136,7 @@ const yShape = new THREE.Shape().setFromPoints([
 ]);
 
 const zShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(0, 0),
+    new THREE.Vector2(),
     new THREE.Vector2(2, 0),
     new THREE.Vector2(2, 1),
     new THREE.Vector2(1, 1),
@@ -333,8 +333,8 @@ function animate() {
         pentomino.position.y -= lastMotion.y;
         pentomino.rotation.z -= lastMotion.z;
 
-        if (pentominoOutOfGrid(pentomino) || pentominoCollides(pentomino, placed)) {
-            // If still colliding after revert, game over
+        // If still colliding after revert, game over
+        if (pentominoCollides(pentomino, placed)) {
             gameOver = true;
             alert("Game Over!");
             return;
