@@ -209,10 +209,52 @@ function pentominoOutOfGrid(pentomino) {
     return box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75;
 }
 
+const CELL_SIZE = 0.25;
+const Z_TEST_ORIGIN = 1; // ray origin z (above the pentomino plane)
+const EPS = 1e-6;
+
+function getOccupiedCells(mesh) {
+    // Ensure world matrices are up-to-date
+    mesh.updateMatrixWorld(true);
+
+    // Compute world-space bounding box for the mesh
+    const box = new THREE.Box3().setFromObject(mesh);
+    const minX = Math.floor((box.min.x + EPS) / CELL_SIZE);
+    const maxX = Math.floor((box.max.x - EPS) / CELL_SIZE);
+    const minY = Math.floor((box.min.y + EPS) / CELL_SIZE);
+    const maxY = Math.floor((box.max.y - EPS) / CELL_SIZE);
+
+    const cells = new Set();
+    for (let ix = minX; ix <= maxX; ix++) {
+        const centerX = ix * CELL_SIZE + CELL_SIZE / 2;
+        for (let iy = minY; iy <= maxY; iy++) {
+            const centerY = iy * CELL_SIZE + CELL_SIZE / 2;
+
+            // Cast a ray from above the plane through the cell center
+            const _raycaster = new THREE.Raycaster(
+                new THREE.Vector3(centerX, centerY, Z_TEST_ORIGIN),
+                new THREE.Vector3(0, 0, -1)
+            );
+
+            const intersects = _raycaster.intersectObject(mesh, true);
+            if (intersects.length > 0) cells.add(`${ix},${iy}`);
+        }
+    } return cells;
+}
+
+function pentominoCollides(pentomino, placedPentominos) {
+    const pentominoCells = getOccupiedCells(pentomino);
+    for (let placed of placedPentominos) {
+        const placedCells = getOccupiedCells(placed);
+        for (let cell of pentominoCells) if (placedCells.has(cell)) return true;
+    } return false;
+}
+
 // Main loop
 let pentomino = null;
 let lastMotion = new THREE.Vector3(0, 0, 0);
 let lastTime = 0;
+let placed = [];
 function animate() {
     // Generate pentomino
     if (pentomino === null) {
@@ -230,7 +272,7 @@ function animate() {
         lastTime = currentTime;
     }
 
-    if (pentominoOutOfGrid(pentomino)) {
+    if (pentominoOutOfGrid(pentomino) || pentominoCollides(pentomino, placed)) {
         // Revert last motion if out of grid
         pentomino.position.x -= lastMotion.x;
         pentomino.position.y -= lastMotion.y;
@@ -251,6 +293,7 @@ function animate() {
             // TODO: Check for completed rows
 
             // Keep the locked pentomino in the scene
+            placed.push(lockedPentomino);
             scene.add(lockedPentomino);
         }
     }
