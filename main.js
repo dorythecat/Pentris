@@ -163,7 +163,7 @@ const shapes = [
 
 // Generate pentominos from given shapes
 let pentominos = [];
-let i = 0;
+let i = 1;
 for (let shape of shapes) {
     const material = new THREE.MeshBasicMaterial({
         color: '#' + ((1 << 24) + (i++ * 0xabcdef11) % 0xffffff).toString(16).slice(1)
