@@ -309,7 +309,6 @@ let pentomino = null;
 let lastMotion = new THREE.Vector3();
 let lastTime = 0;
 let placed = [];
-let gameOver = false;
 function animate() {
     // Generate pentomino
     if (pentomino === null) {
@@ -334,9 +333,16 @@ function animate() {
         pentomino.rotation.z -= lastMotion.z;
 
         // If still colliding after revert, game over
-        if (pentominoCollides(pentomino, placed)) {
-            gameOver = true;
+        if (pentominoCollides(pentomino, placed) && pentomino.position.y === 2.5) {
             alert("Game Over!");
+
+            // Reset game
+            for (let mesh of placed) scene.remove(mesh);
+            placed = [];
+            scene.remove(pentomino);
+            pentomino = null;
+            lastMotion.set(0, 0, 0);
+            lastTime = 0;
             return;
         }
 
