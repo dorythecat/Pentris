@@ -3,7 +3,7 @@ import * as THREE from 'three';
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(
     -window.innerWidth / 200, window.innerWidth / 200,
-    window.innerHeight / 200, -window.innerHeight / 200,
+    3.75, -3.76,
     1, 2
 );
 
@@ -187,10 +187,21 @@ for (i = 0; i <= 30; i++) {
 // Position the camera so we can actually see stuff
 camera.position.z = 1;
 
-// Helper collision functions
-function pentominoOutOfGrid(pentomino) {
-    const box = new THREE.Box3().setFromObject(pentomino);
-    return box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75;
+// Add score text element to DOM
+const scoreDiv = document.createElement('div');
+scoreDiv.style.position = 'absolute';
+scoreDiv.style.top = scoreDiv.style.left = '10px';
+scoreDiv.style.color = 'white';
+scoreDiv.style.font = 'bold 32px monospace';
+scoreDiv.style.textShadow = '1px 1px 4px #ddd';
+scoreDiv.innerText = 'Score: 0000';
+document.body.appendChild(scoreDiv);
+
+// Update score text
+let score = 0;
+function updateScoreText(newScore = null) {
+    score = newScore !== null ? newScore : score;
+    scoreDiv.innerText = 'Score: ' + '0'.repeat(4 - score.toString().length) + score;
 }
 
 const CELL_SIZE = 0.25;
@@ -246,7 +257,7 @@ function getCellMeshMap(placed) {
 function getCompletedRows(cellMeshMap) {
     const rowCounts = {};
     for (let cell of cellMeshMap.keys()) {
-        const [, iy] = cell.split(',').map(Number);
+        const iy = cell.split(',').map(Number)[1];
         rowCounts[iy] = (rowCounts[iy] || 0) + 1;
     }
     // 20 columns per row (from -2.5 to 2.5 in steps of 0.25)
@@ -256,7 +267,6 @@ function getCompletedRows(cellMeshMap) {
 }
 
 // Helper: Remove completed rows and drop above
-let score = 0;
 function clearRowsAndDrop(placed) {
     const cellMeshMap = getCellMeshMap(placed);
     const completedRows = getCompletedRows(cellMeshMap);
@@ -265,9 +275,8 @@ function clearRowsAndDrop(placed) {
     // Remove cells in completed rows
     const toRemove = new Set();
     for (let iy of completedRows) {
-        for (let ix = 0; ix <= 19; ix++) { // -2.5 to 2.25 in steps of 0.25
-            toRemove.add(`${ix - 10},${iy}`);
-        }
+        // -2.5 to 2.25 in steps of 0.25
+        for (let ix = 0; ix <= 19; ix++) toRemove.add(`${ix - 10},${iy}`);
     }
 
     // Remove meshes that only occupy cleared cells
@@ -296,26 +305,27 @@ function clearRowsAndDrop(placed) {
     }
 }
 
-// Add score text element to DOM
-const scoreDiv = document.createElement('div');
-scoreDiv.style.position = 'absolute';
-scoreDiv.style.top = '10px';
-scoreDiv.style.left = '10px';
-scoreDiv.style.color = 'white';
-scoreDiv.style.font = 'bold 32px monospace';
-scoreDiv.style.textShadow = '1px 1px 4px #ddd';
-scoreDiv.innerText = 'Score: 0000';
-document.body.appendChild(scoreDiv);
-
-function updateScoreText(newScore) {
-    score = newScore !== undefined ? newScore : score;
-    if (!scoreDiv) return;
-    let scoreText = score;
-    if (score < 10) scoreText = '000' + score;
-    else if (score < 100) scoreText = '00' + score;
-    else if (score < 1000) scoreText = '0' + score;
-    scoreDiv.innerText = 'Score: ' + scoreText;
-}
+// Handle keyboard input
+function onKeyDown(event) {
+    if (!pentomino) return; // If there's no pentomino currently, we have nothing to do
+    if (event.key === "ArrowLeft") {
+        pentomino.position.x -= 0.25;
+        lastMotion = new THREE.Vector3(-0.25, 0, 0);
+    }
+    else if (event.key === "ArrowRight") {
+        pentomino.position.x += 0.25;
+        lastMotion = new THREE.Vector3(0.25, 0, 0);
+    }
+    else if (event.key === "ArrowUp") {
+        pentomino.rotation.z += Math.PI / 2;
+        pentomino.rotation.z %= 2 * Math.PI;
+        lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
+    }
+    else if (event.key === "ArrowDown") {
+        pentomino.position.y -= 0.25;
+        lastMotion = new THREE.Vector3(0, -0.25, 0);
+    }
+} document.addEventListener('keydown', onKeyDown);
 
 // Main loop
 let pentomino = null;
@@ -335,7 +345,8 @@ function animate() {
         lastMotion = new THREE.Vector3(0, -0.25, 0);
     }
 
-    if (pentominoOutOfGrid(pentomino) || pentominoCollides(pentomino, placed)) {
+    const box = new THREE.Box3().setFromObject(pentomino);
+    if (box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75 || pentominoCollides(pentomino, placed)) {
         // Revert last motion if out of grid
         pentomino.position.x -= lastMotion.x;
         pentomino.position.y -= lastMotion.y;
@@ -378,28 +389,4 @@ function animate() {
             updateScoreText(score + 10);
         }
     } renderer.render(scene, camera);
-}
-renderer.setAnimationLoop(animate);
-
-// Handle keyboard input
-function onKeyDown(event) {
-    if (!pentomino) return; // If there's no pentomino currently, we have nothing to do
-    if (event.key === "ArrowLeft") {
-        pentomino.position.x -= 0.25;
-        lastMotion = new THREE.Vector3(-0.25, 0, 0);
-    }
-    else if (event.key === "ArrowRight") {
-        pentomino.position.x += 0.25;
-        lastMotion = new THREE.Vector3(0.25, 0, 0);
-    }
-    else if (event.key === "ArrowUp") {
-        pentomino.rotation.z += Math.PI / 2;
-        pentomino.rotation.z %= 2 * Math.PI;
-        lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
-    }
-    else if (event.key === "ArrowDown") {
-        pentomino.position.y -= 0.25;
-        lastMotion = new THREE.Vector3(0, -0.25, 0);
-    }
-}
-document.addEventListener('keydown', onKeyDown);
+} renderer.setAnimationLoop(animate);
