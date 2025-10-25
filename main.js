@@ -226,8 +226,8 @@ function getOccupiedCells(mesh) {
 }
 
 function pentominoCollides(pentomino, placedPentominos) {
-    return [...placedPentominos].some(placed =>
-        [...getOccupiedCells(pentomino)].some(cell => getOccupiedCells(placed).has(cell)));
+    return [...getOccupiedCells(pentomino)].some(cell =>
+        [...placedPentominos].some(placed => getOccupiedCells(placed).has(cell)));
 }
 
 // Helper: Map cell string to mesh reference
