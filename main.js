@@ -158,29 +158,29 @@ for (let shape of shapes) {
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
     mesh.scale.set(0.25, 0.25, 1);
     mesh.geometry.computeBoundingBox();
-    mesh.position.y = 2.5;
+    mesh.position.set(0, 2.5, 0);
     pentominos.push(mesh);
 }
 
 // Generate the grid
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
 const vLine = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector2(0, -3.75),
-    new THREE.Vector2(0, 3.75)
+    new THREE.Vector2(-2.5, -3.75),
+    new THREE.Vector2(-2.5, 3.75)
 ]);
 for (i = 0; i <= 20; i++) {
     const mesh = new THREE.Line(vLine, lineMaterial);
-    mesh.position.x = -2.5 + i / 4;
+    mesh.position.x = i / 4;
     scene.add(mesh);
 }
 
 const hLine = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector2(-2.5, 0),
-    new THREE.Vector2(2.5, 0)
+    new THREE.Vector2(-2.5, -3.75),
+    new THREE.Vector2(2.5, -3.75)
 ]);
 for (i = 0; i <= 30; i++) {
     const mesh = new THREE.Line(hLine, lineMaterial);
-    mesh.position.y = -3.75 + i / 4;
+    mesh.position.y = i / 4;
     scene.add(mesh);
 }
 
@@ -226,11 +226,8 @@ function getOccupiedCells(mesh) {
 }
 
 function pentominoCollides(pentomino, placedPentominos) {
-    const pentominoCells = getOccupiedCells(pentomino);
-    for (let placed of placedPentominos) {
-        const placedCells = getOccupiedCells(placed);
-        for (let cell of pentominoCells) if (placedCells.has(cell)) return true;
-    } return false;
+    return [...placedPentominos].some(placed =>
+        [...getOccupiedCells(pentomino)].some(cell => getOccupiedCells(placed).has(cell)));
 }
 
 // Helper: Map cell string to mesh reference
