@@ -292,8 +292,29 @@ function clearRowsAndDrop(placed) {
         } if (drop > 0) {
             mesh.position.y -= CELL_SIZE * drop;
             score += drop * 100; // Increment score
+            updateScoreText();
         }
     }
+}
+
+// Add score text element to DOM
+let scoreDiv = document.createElement('div');
+scoreDiv.style.position = 'absolute';
+scoreDiv.style.top = '10px';
+scoreDiv.style.left = '10px';
+scoreDiv.style.color = 'white';
+scoreDiv.style.font = 'bold 32px monospace';
+scoreDiv.style.textShadow = '1px 1px 4px #ddd';
+scoreDiv.innerText = 'Score: 0000';
+document.body.appendChild(scoreDiv);
+
+function updateScoreText() {
+    if (!scoreDiv) return;
+    let scoreText = score;
+    if (score < 10) scoreText = '000' + score;
+    else if (score < 100) scoreText = '00' + score;
+    else if (score < 1000) scoreText = '0' + score;
+    scoreDiv.innerText = 'Score: ' + scoreText;
 }
 
 // Main loop
@@ -336,6 +357,7 @@ function animate() {
             lastMotion.set(0, 0, 0);
             lastTime = 0;
             score = 0;
+            updateScoreText();
             return;
         }
 
@@ -360,6 +382,7 @@ function animate() {
 
             // Add score
             score += 10;
+            updateScoreText();
         }
     } renderer.render(scene, camera);
 }
