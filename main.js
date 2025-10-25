@@ -189,11 +189,7 @@ camera.position.z = 1;
 
 // Add score text element to DOM
 const scoreDiv = document.createElement('div');
-scoreDiv.style.position = 'absolute';
-scoreDiv.style.top = scoreDiv.style.left = '10px';
-scoreDiv.style.color = 'white';
-scoreDiv.style.font = 'bold 32px monospace';
-scoreDiv.style.textShadow = '1px 1px 4px #ddd';
+scoreDiv.id = 'score';
 scoreDiv.innerText = 'Score: 0000';
 document.body.appendChild(scoreDiv);
 
