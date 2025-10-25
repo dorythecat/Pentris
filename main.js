@@ -208,7 +208,7 @@ const CELL_SIZE = 0.25;
 const Z_TEST_ORIGIN = 1; // ray origin z (above the pentomino plane)
 const EPS = CELL_SIZE / 1000000; // small epsilon to avoid edge cases
 
-// Get grid cells occupied by a mesh
+const sharedRaycaster = new THREE.Raycaster();
 function getOccupiedCells(mesh) {
     // Ensure world matrices are up-to-date
     mesh.updateMatrixWorld(true);
@@ -225,15 +225,9 @@ function getOccupiedCells(mesh) {
         const centerX = ix * CELL_SIZE + CELL_SIZE / 2;
         for (let iy = minY; iy <= maxY; iy++) {
             const centerY = iy * CELL_SIZE + CELL_SIZE / 2;
-
-            // Cast a ray from above the plane through the cell center
-            const _raycaster = new THREE.Raycaster(
-                new THREE.Vector3(centerX, centerY, Z_TEST_ORIGIN),
-                new THREE.Vector3(0, 0, -1)
-            );
-
-            const intersects = _raycaster.intersectObject(mesh, true);
-            if (intersects.length > 0) cells.add(`${ix},${iy}`);
+            sharedRaycaster.set(new THREE.Vector3(centerX, centerY, Z_TEST_ORIGIN),
+                                new THREE.Vector3(0, 0, -1));
+            if (sharedRaycaster.intersectObject(mesh, true).length > 0) cells.add(`${ix},${iy}`);
         }
     } return cells;
 }
