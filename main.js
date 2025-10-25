@@ -201,9 +201,6 @@ function updateScoreText(newScore = null) {
 }
 
 const CELL_SIZE = 0.25;
-const Z_TEST_ORIGIN = 1; // ray origin z (above the pentomino plane)
-const EPS = CELL_SIZE / 1000000; // small epsilon to avoid edge cases
-
 const sharedRaycaster = new THREE.Raycaster();
 function getOccupiedCells(mesh) {
     // Ensure world matrices are up-to-date
@@ -211,17 +208,17 @@ function getOccupiedCells(mesh) {
 
     // Compute world-space bounding box for the mesh
     const box = new THREE.Box3().setFromObject(mesh);
-    const minX = Math.floor(box.min.x / CELL_SIZE + EPS);
-    const maxX = Math.floor(box.max.x / CELL_SIZE - EPS);
-    const minY = Math.floor(box.min.y / CELL_SIZE + EPS);
-    const maxY = Math.floor(box.max.y / CELL_SIZE - EPS);
+    const minX = Math.floor(box.min.x / CELL_SIZE);
+    const maxX = Math.floor(box.max.x / CELL_SIZE);
+    const minY = Math.floor(box.min.y / CELL_SIZE);
+    const maxY = Math.floor(box.max.y / CELL_SIZE);
 
     const cells = new Set();
     for (let ix = minX; ix <= maxX; ix++) {
         const centerX = ix * CELL_SIZE + CELL_SIZE / 2;
         for (let iy = minY; iy <= maxY; iy++) {
             const centerY = iy * CELL_SIZE + CELL_SIZE / 2;
-            sharedRaycaster.set(new THREE.Vector3(centerX, centerY, Z_TEST_ORIGIN),
+            sharedRaycaster.set(new THREE.Vector3(centerX, centerY, 1),
                                 new THREE.Vector3(0, 0, -1));
             if (sharedRaycaster.intersectObject(mesh, true).length > 0) cells.add(`${ix},${iy}`);
         }
