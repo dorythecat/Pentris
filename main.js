@@ -233,17 +233,17 @@ function pentominoCollides(pentomino, placedPentominos) {
 // Helper: Map cell string to mesh reference
 function getCellMeshMap(placed) {
     const cellMeshMap = new Map();
-    for (let mesh of placed) for (let cell of getOccupiedCells(mesh)) cellMeshMap.set(cell, mesh);
+    placed.forEach(mesh => getOccupiedCells(mesh).forEach(cell => cellMeshMap.set(cell, mesh)));
     return cellMeshMap;
 }
 
 // Helper: Find completed rows
 function getCompletedRows(cellMeshMap) {
     const rowCounts = {};
-    for (let cell of cellMeshMap.keys()) {
-        const iy = cell.split(',').map(Number)[1];
+    cellMeshMap.keys().forEach(mesh => {
+        const iy = mesh.split(',').map(Number)[1];
         rowCounts[iy] = (rowCounts[iy] || 0) + 1;
-    }
+    });
     // 20 columns per row (from -2.5 to 2.5 in steps of 0.25)
     return Object.entries(rowCounts)
         .filter(row => row[1] === 20)
