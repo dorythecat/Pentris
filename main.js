@@ -320,7 +320,6 @@ function updateScoreText(newScore) {
 // Main loop
 let pentomino = null;
 let lastMotion = new THREE.Vector3();
-let lastTime = 0;
 let placed = [];
 function animate() {
     // Generate pentomino
@@ -331,12 +330,9 @@ function animate() {
         return;
     }
 
-    const currentTime = performance.now();
-    if (currentTime - lastTime > 250) {
-        // Move pentomino down every second
+    if (performance.now() % 15 === 0) {
         pentomino.position.y -= 0.25;
         lastMotion = new THREE.Vector3(0, -0.25, 0);
-        lastTime = currentTime;
     }
 
     if (pentominoOutOfGrid(pentomino) || pentominoCollides(pentomino, placed)) {
@@ -355,7 +351,6 @@ function animate() {
             scene.remove(pentomino);
             pentomino = null;
             lastMotion.set(0, 0, 0);
-            lastTime = 0;
             updateScoreText(0);
             return;
         }
