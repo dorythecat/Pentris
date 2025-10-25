@@ -156,7 +156,7 @@ for (let shape of shapes) {
         color: '#' + ((1 << 24) + (i++ * 0xabcdef11) % 0xffffff).toString(16).slice(1)
     });
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
-    mesh.scale.set(0.25, 0.25, 0.25);
+    mesh.scale.set(0.25, 0.25, 1);
     mesh.geometry.computeBoundingBox();
     mesh.position.y = 2.5;
     pentominos.push(mesh);
