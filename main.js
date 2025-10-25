@@ -252,8 +252,7 @@ function getCompletedRows(cellMeshMap) {
 
 // Helper: Remove completed rows and drop above
 function clearRowsAndDrop(placed) {
-    const cellMeshMap = getCellMeshMap(placed);
-    const completedRows = getCompletedRows(cellMeshMap);
+    const completedRows = getCompletedRows(getCellMeshMap(placed));
     if (completedRows.length === 0) return;
 
     // Remove cells in completed rows
@@ -264,24 +263,21 @@ function clearRowsAndDrop(placed) {
     }
 
     // Remove meshes that only occupy cleared cells
-    for (let mesh of placed.slice()) {
-        const meshCells = getOccupiedCells(mesh);
-        if ([...meshCells].some(cell => !toRemove.has(cell))) continue;
+    placed.slice().forEach(mesh => {
+        if ([...getOccupiedCells(mesh)].some(cell => !toRemove.has(cell))) return;
         scene.remove(mesh);
         placed.splice(placed.indexOf(mesh), 1);
-    }
+    });
 
     // Drop meshes above cleared rows
-    for (let mesh of placed) {
-        const meshCells = getOccupiedCells(mesh);
+    placed.forEach(mesh => {
         let drop = 0;
-        for (let iy of completedRows) {
-            // If mesh is above cleared row, increment drop
-            if ([...meshCells].some(cell => cell.split(',').map(Number)[1] > iy)) drop++;
-        } if (drop <= 0) continue;
+        completedRows.forEach(iy => { // If mesh is above cleared row, increment drop
+            if ([...getOccupiedCells(mesh)].some(cell => cell.split(',').map(Number)[1] > iy)) drop++;
+        }); if (drop <= 0) return;
         mesh.position.y -= drop * CELL_SIZE;
         updateScoreText(score + drop * drop * 100);
-    }
+    });
 }
 
 // Handle keyboard input
