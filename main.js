@@ -295,31 +295,26 @@ function onKeyDown(event) {
     const oldX = pentomino.position.x;
     const oldY = pentomino.position.y;
     const oldRot = pentomino.rotation.z;
-    let moved = false;
     if (event.key === "ArrowLeft") {
         pentomino.position.x -= 0.25;
         lastMotion = new THREE.Vector3(-0.25, 0, 0);
-        moved = true;
     }
     else if (event.key === "ArrowRight") {
         pentomino.position.x += 0.25;
         lastMotion = new THREE.Vector3(0.25, 0, 0);
-        moved = true;
     }
     else if (event.key === "ArrowUp") {
         pentomino.rotation.z += Math.PI / 2;
         pentomino.rotation.z %= 2 * Math.PI;
         lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
-        moved = true;
     }
     else if (event.key === "ArrowDown") {
         pentomino.position.y -= 0.25;
         lastMotion = new THREE.Vector3(0, -0.25, 0);
-        moved = true;
     }
 
     // After move, check for collision or out-of-bounds
-    if (!moved) return;
+    if (lastMotion === new THREE.Vector3()) return;
     const box = new THREE.Box3().setFromObject(pentomino);
     if (box.min.x >= -2.5 && box.max.x <= 2.5 && box.min.y >= -3.75 && !pentominoCollides(pentomino, placed)) return;
     pentomino.position.x = oldX;
