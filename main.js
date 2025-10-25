@@ -249,8 +249,8 @@ function getCompletedRows(cellMeshMap) {
     }
     // 20 columns per row (from -2.5 to 2.5 in steps of 0.25)
     return Object.entries(rowCounts)
-        .filter(([_, count]) => count === 20)
-        .map(([iy]) => Number(iy));
+        .filter(row => row[1] === 20)
+        .map(iy => Number(iy[0]));
 }
 
 // Helper: Remove completed rows and drop above
@@ -269,10 +269,9 @@ function clearRowsAndDrop(placed) {
     // Remove meshes that only occupy cleared cells
     for (let mesh of placed.slice()) {
         const meshCells = getOccupiedCells(mesh);
-        if ([...meshCells].every(cell => toRemove.has(cell))) {
-            scene.remove(mesh);
-            placed.splice(placed.indexOf(mesh), 1);
-        }
+        if ([...meshCells].some(cell => !toRemove.has(cell))) continue;
+        scene.remove(mesh);
+        placed.splice(placed.indexOf(mesh), 1);
     }
 
     // Drop meshes above cleared rows
@@ -281,14 +280,10 @@ function clearRowsAndDrop(placed) {
         let drop = 0;
         for (let iy of completedRows) {
             // If mesh is above cleared row, increment drop
-            if ([...meshCells].some(cell => {
-                const [, cy] = cell.split(',').map(Number);
-                return cy > iy;
-            })) drop++;
-        } if (drop > 0) {
-            mesh.position.y -= CELL_SIZE * drop;
-            updateScoreText(score + drop * 100);
-        }
+            if ([...meshCells].some(cell => cell.split(',').map(Number)[1] > iy)) drop++;
+        } if (drop <= 0) continue;
+        mesh.position.y -= drop * CELL_SIZE;
+        updateScoreText(score + drop * drop * 100);
     }
 }
 
