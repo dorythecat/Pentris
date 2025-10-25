@@ -306,6 +306,8 @@ function clearRowsAndDrop(placed) {
 }
 
 // Handle keyboard input
+let pentomino = null;
+let placed = [];
 let lastMotion = new THREE.Vector3();
 function onKeyDown(event) {
     if (!pentomino) return;
@@ -340,15 +342,13 @@ function onKeyDown(event) {
     // After move, check for collision or out-of-bounds
     if (!moved) return;
     const box = new THREE.Box3().setFromObject(pentomino);
-    if (!(box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75 || pentominoCollides(pentomino, placed))) return;
+    if (box.min.x >= -2.5 && box.max.x <= 2.5 && box.min.y >= -3.75 && !pentominoCollides(pentomino, placed)) return;
     pentomino.position.x = oldX;
     pentomino.position.y = oldY;
     pentomino.rotation.z = oldRot;
 } document.addEventListener('keydown', onKeyDown);
 
 // Main loop
-let pentomino = null;
-let placed = [];
 function animate() {
     // Generate pentomino
     if (pentomino === null) {
@@ -379,7 +379,7 @@ function animate() {
             placed = [];
             scene.remove(pentomino);
             pentomino = null;
-            lastMotion.set(0, 0, 0);
+            lastMotion = new THREE.Vector3();
             updateScoreText(0);
             return;
         }
