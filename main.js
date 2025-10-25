@@ -195,8 +195,8 @@ document.body.appendChild(scoreDiv);
 
 // Update score text
 let score = 0;
-function updateScoreText(newScore = null) {
-    score = newScore !== null ? newScore : score;
+function updateScoreText(newScore = 0) {
+    score = newScore;
     scoreDiv.innerText = 'Score: ' + '0'.repeat(4 - score.toString().length) + score;
 }
 
@@ -354,7 +354,7 @@ function animate() {
             scene.remove(pentomino);
             pentomino = null;
             lastMotion = new THREE.Vector3();
-            updateScoreText(0);
+            updateScoreText();
             return;
         }
 
