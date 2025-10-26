@@ -208,12 +208,11 @@ const shapes = [
 // Generate pentominos from given shapes
 const CELL_SIZE = 0.25;
 let pentominos = [];
-let i = 1;
-for (let shape of shapes) {
+for (let i = 1; i <= shapes.length; i++) {
     const material = new THREE.MeshBasicMaterial({
-        color: '#' + ((1 << 24) + (i++ * 0xabcdef11) % 0xffffff).toString(16).slice(1)
+        color: '#' + ((1 << 24) + (i * 0xabcdef11) % 0xffffff).toString(16).slice(1)
     });
-    const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
+    const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shapes[i - 1]), material);
     mesh.scale.set(CELL_SIZE, CELL_SIZE, 1);
     mesh.geometry.computeBoundingBox();
     mesh.position.set(0, 2.5, 0);
@@ -232,7 +231,7 @@ const hMesh = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
 ]), lineMaterial);
 scene.add(hMesh);
 scene.add(vMesh);
-for (i = CELL_SIZE; i <= 30 * CELL_SIZE; i += CELL_SIZE) {
+for (let i = CELL_SIZE; i <= 30 * CELL_SIZE; i += CELL_SIZE) {
     const hMeshClone = hMesh.clone();
     hMeshClone.position.y = i;
     scene.add(hMeshClone);
