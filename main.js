@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 
+// Check that WebGL is supported
+if (!window.WebGLRenderingContext) window.location = "https://get.webgl.org";
+
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(
     -window.innerWidth / 200, window.innerWidth / 200,
