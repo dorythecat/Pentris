@@ -365,7 +365,7 @@ function animate() {
         placed = [];
         scene.remove(pentomino);
         pentomino = null;
-        lastMotion = new THREE.Vector3();
+        lastMotion.set(0, 0, 0);
         updateScoreText();
         return;
     }
