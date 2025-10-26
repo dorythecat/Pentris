@@ -423,26 +423,31 @@ function animate() {
         return;
     }
 
+    if (lastMotion.y >= 0) {
+        renderer.render(scene, camera);
+        return;
+    }
+
     // If the last motion was down, we need to lock the pentomino and generate a new one
-    if (lastMotion.y < 0) {
-        const lockedPentomino = pentomino.clone(); // Clone the pentomino to lock it in place
+    const lockedPentomino = pentomino.clone(); // Clone the pentomino to lock it in place
 
-        // Reset pentomino to start position
-        pentomino.position.set(0, 2.5, 0);
-        pentomino.rotation.set(0, 0, 0);
+    // Reset pentomino to start position
+    pentomino.position.set(0, 2.5, 0);
+    pentomino.rotation.set(0, 0, 0);
 
-        // Remove pentomino from scene
-        scene.remove(pentomino);
-        pentomino = null;
+    // Remove pentomino from scene
+    scene.remove(pentomino);
+    pentomino = null;
 
-        // Keep the locked pentomino in the scene
-        placed.push(lockedPentomino);
-        scene.add(lockedPentomino);
+    // Keep the locked pentomino in the scene
+    placed.push(lockedPentomino);
+    scene.add(lockedPentomino);
 
-        // Clear completed rows
-        clearRowsAndDrop(placed);
+    // Clear completed rows
+    clearRowsAndDrop(placed);
 
-        // Add score
-        updateScoreText(score + 10);
-    } renderer.render(scene, camera);
+    // Add score
+    updateScoreText(score + 10);
+
+    renderer.render(scene, camera);
 } renderer.setAnimationLoop(animate);
