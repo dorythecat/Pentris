@@ -287,10 +287,6 @@ let lastMotion = new THREE.Vector3();
 function onKeyDown(event) {
     if (!pentomino) return;
 
-    // Store old position and rotation
-    const oldX = pentomino.position.x;
-    const oldY = pentomino.position.y;
-    const oldRot = pentomino.rotation.z;
     if (event.key === "ArrowLeft") {
         pentomino.position.x -= 0.25;
         lastMotion = new THREE.Vector3(-0.25, 0, 0);
@@ -313,9 +309,9 @@ function onKeyDown(event) {
     if (lastMotion === new THREE.Vector3()) return;
     const box = new THREE.Box3().setFromObject(pentomino);
     if (box.min.x >= -2.5 && box.max.x <= 2.5 && box.min.y >= -3.75 && !pentominoCollides(pentomino, placed)) return;
-    pentomino.position.x = oldX;
-    pentomino.position.y = oldY;
-    pentomino.rotation.z = oldRot;
+    pentomino.position.x -= lastMotion.x;
+    pentomino.position.y -= lastMotion.y;
+    pentomino.rotation.z -= lastMotion.z;
 } document.addEventListener('keydown', onKeyDown);
 
 // Main loop
