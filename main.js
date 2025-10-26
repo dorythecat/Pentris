@@ -293,32 +293,35 @@ let lastMotion = new THREE.Vector3();
 function onKeyDown(event) {
     if (!pentomino) return;
 
-    if (event.key === "ArrowLeft") {
-        pentomino.position.x -= 0.25;
-        lastMotion = new THREE.Vector3(-0.25, 0, 0);
-    } else if (event.key === "ArrowRight") {
-        pentomino.position.x += 0.25;
-        lastMotion = new THREE.Vector3(0.25, 0, 0);
-    } else if (event.key === "ArrowUp") {
-        pentomino.rotation.z += Math.PI / 2;
-        pentomino.rotation.z %= 2 * Math.PI;
-        lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
-    } else if (event.key === "ArrowDown") {
-        pentomino.position.y -= 0.25;
-        lastMotion = new THREE.Vector3(0, -0.25, 0);
-    } else if (event.key === " ") {
-        // Hard drop
-        while (true) {
+    switch (event.key) {
+        case "ArrowLeft":
+            pentomino.position.x -= 0.25;
+            lastMotion = new THREE.Vector3(-0.25, 0, 0);
+            break;
+        case "ArrowRight":
+            pentomino.position.x += 0.25;
+            lastMotion = new THREE.Vector3(0.25, 0, 0);
+            break;
+        case "ArrowUp":
+            pentomino.rotation.z += Math.PI / 2;
+            pentomino.rotation.z %= 2 * Math.PI;
+            lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
+            break;
+        case "ArrowDown":
             pentomino.position.y -= 0.25;
-            if (outOfBounds(pentomino) || pentominoCollides(pentomino, placed)) {
+            lastMotion = new THREE.Vector3(0, -0.25, 0);
+            break;
+        case " ": // Hard drop
+            while (true) {
+                pentomino.position.y -= 0.25;
+                if (!outOfBounds(pentomino) && !pentominoCollides(pentomino, placed)) continue;
                 pentomino.position.y += 0.25;
                 break;
-            }
-        }
+            } break;
+        default: return; // Ignore other keys
     }
 
     // After move, check for collision or out-of-bounds
-    if (lastMotion === new THREE.Vector3()) return;
     if (!outOfBounds(pentomino) && !pentominoCollides(pentomino, placed)) return;
     pentomino.position.x -= lastMotion.x;
     pentomino.position.y -= lastMotion.y;
