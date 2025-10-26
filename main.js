@@ -167,24 +167,24 @@ for (let shape of shapes) {
 
 // Generate the grid
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-const vLine = new THREE.BufferGeometry().setFromPoints([
+const vMesh = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector2(-2.5, -3.75),
     new THREE.Vector2(-2.5, 3.75)
-]);
-for (i = 0; i <= 20; i++) {
-    const mesh = new THREE.Line(vLine, lineMaterial);
-    mesh.position.x = i / 4;
-    scene.add(mesh);
-}
-
-const hLine = new THREE.BufferGeometry().setFromPoints([
+]), lineMaterial);
+const hMesh = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector2(-2.5, -3.75),
     new THREE.Vector2(2.5, -3.75)
-]);
-for (i = 0; i <= 30; i++) {
-    const mesh = new THREE.Line(hLine, lineMaterial);
-    mesh.position.y = i / 4;
-    scene.add(mesh);
+]), lineMaterial);
+scene.add(hMesh);
+scene.add(vMesh);
+for (i = 1; i <= 30; i++) {
+    const hMeshClone = hMesh.clone();
+    hMeshClone.position.y = i / 4;
+    scene.add(hMeshClone);
+    if (i > 20) continue; // Only 20 vertical divisions
+    const vMeshClone = vMesh.clone();
+    vMeshClone.position.x = i / 4;
+    scene.add(vMeshClone);
 }
 
 // Position the camera so we can actually see stuff
