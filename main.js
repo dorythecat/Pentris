@@ -152,6 +152,7 @@ const shapes = [
 ];
 
 // Generate pentominos from given shapes
+const CELL_SIZE = 0.25;
 let pentominos = [];
 let i = 1;
 for (let shape of shapes) {
@@ -159,7 +160,7 @@ for (let shape of shapes) {
         color: '#' + ((1 << 24) + (i++ * 0xabcdef11) % 0xffffff).toString(16).slice(1)
     });
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
-    mesh.scale.set(0.25, 0.25, 1);
+    mesh.scale.set(CELL_SIZE, CELL_SIZE, 1);
     mesh.geometry.computeBoundingBox();
     mesh.position.set(0, 2.5, 0);
     pentominos.push(mesh);
@@ -177,13 +178,13 @@ const hMesh = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
 ]), lineMaterial);
 scene.add(hMesh);
 scene.add(vMesh);
-for (i = 1; i <= 30; i++) {
+for (i = CELL_SIZE; i <= 30 * CELL_SIZE; i += CELL_SIZE) {
     const hMeshClone = hMesh.clone();
-    hMeshClone.position.y = i / 4;
+    hMeshClone.position.y = i;
     scene.add(hMeshClone);
-    if (i > 20) continue; // Only 20 vertical divisions
+    if (i > 20 * CELL_SIZE) continue; // Only 20 vertical divisions
     const vMeshClone = vMesh.clone();
-    vMeshClone.position.x = i / 4;
+    vMeshClone.position.x = i;
     scene.add(vMeshClone);
 }
 
@@ -203,7 +204,6 @@ function updateScoreText(newScore = 0) {
     scoreDiv.innerText = 'Score: ' + '0'.repeat(4 - score.toString().length) + score;
 }
 
-const CELL_SIZE = 0.25;
 const sharedRaycaster = new THREE.Raycaster();
 function getOccupiedCells(mesh) {
     // Ensure world matrices are up-to-date
@@ -247,7 +247,7 @@ function getCompletedRows(cellMeshMap) {
         const iy = mesh.split(',').map(Number)[1];
         rowCounts[iy] = (rowCounts[iy] || 0) + 1;
     });
-    // 20 columns per row (from -2.5 to 2.5 in steps of 0.25)
+    // 20 columns per row (from -2.5 to 2.5 in steps of CELL_SIZE)
     return Object.entries(rowCounts)
         .filter(row => row[1] === 20)
         .map(iy => Number(iy[0]));
@@ -260,10 +260,10 @@ function clearRowsAndDrop(placed) {
 
     // Remove cells in completed rows
     const toRemove = new Set();
-    for (let iy of completedRows) {
+    completedRows.forEach(iy => {
         // -2.5 to 2.25 in steps of 0.25
         for (let ix = 0; ix <= 19; ix++) toRemove.add(`${ix - 10},${iy}`);
-    }
+    });
 
     // Remove meshes that only occupy cleared cells
     placed.slice().forEach(mesh => {
@@ -298,12 +298,12 @@ function onKeyDown(event) {
 
     switch (event.key) {
         case "ArrowLeft":
-            pentomino.position.x -= 0.25;
-            lastMotion = new THREE.Vector3(-0.25, 0, 0);
+            pentomino.position.x -= CELL_SIZE;
+            lastMotion = new THREE.Vector3(-CELL_SIZE, 0, 0);
             break;
         case "ArrowRight":
-            pentomino.position.x += 0.25;
-            lastMotion = new THREE.Vector3(0.25, 0, 0);
+            pentomino.position.x += CELL_SIZE;
+            lastMotion = new THREE.Vector3(CELL_SIZE, 0, 0);
             break;
         case "ArrowUp":
             pentomino.rotation.z += Math.PI / 2;
@@ -311,14 +311,14 @@ function onKeyDown(event) {
             lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
             break;
         case "ArrowDown":
-            pentomino.position.y -= 0.25;
-            lastMotion = new THREE.Vector3(0, -0.25, 0);
+            pentomino.position.y -= CELL_SIZE;
+            lastMotion = new THREE.Vector3(0, -CELL_SIZE, 0);
             break;
         case " ": // Hard drop
             while (true) {
-                pentomino.position.y -= 0.25;
+                pentomino.position.y -= CELL_SIZE;
                 if (!outOfBounds(pentomino) && !pentominoCollides(pentomino, placed)) continue;
-                pentomino.position.y += 0.25;
+                pentomino.position.y += CELL_SIZE;
                 break;
             } break;
         default: return; // Ignore other keys
@@ -342,8 +342,8 @@ function animate() {
     }
 
     if (performance.now() % 15 === 0) {
-        pentomino.position.y -= 0.25;
-        lastMotion = new THREE.Vector3(0, -0.25, 0);
+        pentomino.position.y -= CELL_SIZE;
+        lastMotion = new THREE.Vector3(0, -CELL_SIZE, 0);
     }
 
     if (outOfBounds(pentomino) || pentominoCollides(pentomino, placed)) {
