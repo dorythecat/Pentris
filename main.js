@@ -29,19 +29,6 @@ const fShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 0)
 ]);
 
-const fMirrorShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(),
-    new THREE.Vector2(0, 1),
-    new THREE.Vector2(1, 1),
-    new THREE.Vector2(1, 2),
-    new THREE.Vector2(0, 2),
-    new THREE.Vector2(0, 3),
-    new THREE.Vector2(-2, 3),
-    new THREE.Vector2(-2, 2),
-    new THREE.Vector2(-1, 2),
-    new THREE.Vector2(-1, 0)
-]);
-
 const iShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(0, 5),
@@ -58,15 +45,6 @@ const lShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(2, 0)
 ]);
 
-const lMirrorShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(),
-    new THREE.Vector2(0, 4),
-    new THREE.Vector2(-1, 4),
-    new THREE.Vector2(-1, 1),
-    new THREE.Vector2(-2, 1),
-    new THREE.Vector2(-2, 0)
-]);
-
 const nShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(0, 2),
@@ -78,17 +56,6 @@ const nShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 0)
 ]);
 
-const nMirrorShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(),
-    new THREE.Vector2(0, 2),
-    new THREE.Vector2(-1, 2),
-    new THREE.Vector2(-1, 4),
-    new THREE.Vector2(-2, 4),
-    new THREE.Vector2(-2, 1),
-    new THREE.Vector2(-1, 1),
-    new THREE.Vector2(-1, 0)
-]);
-
 const pShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(0, 3),
@@ -96,15 +63,6 @@ const pShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(2, 1),
     new THREE.Vector2(1, 1),
     new THREE.Vector2(1, 0)
-]);
-
-const pMirrorShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(),
-    new THREE.Vector2(0, 3),
-    new THREE.Vector2(-2, 3),
-    new THREE.Vector2(-2, 1),
-    new THREE.Vector2(-1, 1),
-    new THREE.Vector2(-1, 0)
 ]);
 
 const tShape = new THREE.Shape().setFromPoints([
@@ -177,17 +135,6 @@ const yShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 0)
 ]);
 
-const yMirrorShape = new THREE.Shape().setFromPoints([
-    new THREE.Vector2(),
-    new THREE.Vector2(0, 4),
-    new THREE.Vector2(-1, 4),
-    new THREE.Vector2(-1, 3),
-    new THREE.Vector2(-2, 3),
-    new THREE.Vector2(-2, 2),
-    new THREE.Vector2(-1, 2),
-    new THREE.Vector2(-1, 0)
-]);
-
 const zShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(2, 0),
@@ -200,9 +147,8 @@ const zShape = new THREE.Shape().setFromPoints([
 ]);
 
 const shapes = [
-    fShape, fMirrorShape, iShape, lShape, lMirrorShape, nShape, nMirrorShape,
-    pShape, pMirrorShape, tShape, uShape, vShape, wShape, xShape, yShape,
-    yMirrorShape, zShape
+    fShape, iShape, lShape, nShape, pShape, tShape,
+    uShape, vShape, wShape, xShape, yShape, zShape
 ];
 
 // Generate pentominos from given shapes
@@ -257,7 +203,7 @@ function updateScoreText(newScore = 0) {
     scoreDiv.innerText = 'Score: ' + '0'.repeat(4 - score.toString().length) + score;
 }
 
-const sharedRaycaster = new THREE.Raycaster();
+const raycaster = new THREE.Raycaster();
 function getOccupiedCells(mesh) {
     // Ensure world matrices are up-to-date
     mesh.updateMatrixWorld(true);
@@ -274,9 +220,9 @@ function getOccupiedCells(mesh) {
         const centerX = ix * CELL_SIZE + CELL_SIZE / 2;
         for (let iy = minY; iy <= maxY; iy++) {
             const centerY = iy * CELL_SIZE + CELL_SIZE / 2;
-            sharedRaycaster.set(new THREE.Vector3(centerX, centerY, 1),
-                                new THREE.Vector3(0, 0, -1));
-            if (sharedRaycaster.intersectObject(mesh, true).length > 0) cells.add(`${ix},${iy}`);
+            raycaster.set(new THREE.Vector3(centerX, centerY, 1),
+                          new THREE.Vector3(0, 0, -1));
+            if (raycaster.intersectObject(mesh, true).length > 0) cells.add(`${ix},${iy}`);
         }
     } return cells;
 }
@@ -286,29 +232,17 @@ function pentominoCollides(pentomino, placedPentominos) {
         [...placedPentominos].some(placed => getOccupiedCells(placed).has(cell)));
 }
 
-// Helper: Map cell string to mesh reference
-function getCellMeshMap(placed) {
-    const cellMeshMap = new Map();
-    placed.forEach(mesh => getOccupiedCells(mesh).forEach(cell => cellMeshMap.set(cell, mesh)));
-    return cellMeshMap;
-}
-
-// Helper: Find completed rows
-function getCompletedRows(cellMeshMap) {
-    const rowCounts = {};
-    cellMeshMap.keys().forEach(mesh => {
-        const iy = mesh.split(',').map(Number)[1];
-        rowCounts[iy] = (rowCounts[iy] || 0) + 1;
-    });
-    // 20 columns per row (from -2.5 to 2.5 in steps of CELL_SIZE)
-    return Object.entries(rowCounts)
-        .filter(row => row[1] === 20)
-        .map(iy => Number(iy[0]));
-}
-
 // Helper: Remove completed rows and drop above
 function clearRowsAndDrop(placed) {
-    const completedRows = getCompletedRows(getCellMeshMap(placed));
+    const rowCounts = {};
+    placed.forEach(mesh => getOccupiedCells(mesh).forEach(cell => {
+        const iy = Number(cell.split(',')[1]);
+        rowCounts[iy] = (rowCounts[iy] || 0) + 1;
+    }));
+
+    const completedRows = Object.entries(rowCounts)
+        .filter(count => count[1] === 20)
+        .map(i => Number(i[0]));
     if (completedRows.length === 0) return;
 
     // Remove cells in completed rows
@@ -388,7 +322,8 @@ function onKeyDown(event) {
 function animate() {
     // Generate pentomino
     if (pentomino === null) {
-        pentomino = pentominos[Math.floor(Math.random() * pentominos.length)];
+        pentomino = pentominos[Math.floor(Math.random() * pentominos.length)].clone();
+        if (Math.random() < 0.5) pentomino.scale.set(-CELL_SIZE, CELL_SIZE, 1); // Mirror horizontally
         scene.add(pentomino);
         renderer.render(scene, camera);
         return;
@@ -428,22 +363,9 @@ function animate() {
         return;
     }
 
-    // If the last motion was down, we need to lock the pentomino and generate a new one
-    const lockedPentomino = pentomino.clone(); // Clone the pentomino to lock it in place
-
-    // Reset pentomino to start position
-    pentomino.position.set(0, 2.5, 0);
-    pentomino.rotation.set(0, 0, 0);
-
-    // Remove pentomino from scene
-    scene.remove(pentomino);
+    // Place pentomino
+    placed.push(pentomino);
     pentomino = null;
-
-    // Keep the locked pentomino in the scene
-    placed.push(lockedPentomino);
-    scene.add(lockedPentomino);
-
-    // Clear completed rows
     clearRowsAndDrop(placed);
 
     // Add score
