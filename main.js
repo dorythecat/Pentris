@@ -280,6 +280,12 @@ function clearRowsAndDrop(placed) {
     });
 }
 
+// Helper: Check out-of-bounds
+function outOfBounds(pentomino) {
+    const box = new THREE.Box3().setFromObject(pentomino);
+    return box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75;
+}
+
 // Handle keyboard input
 let pentomino = null;
 let placed = [];
@@ -304,8 +310,7 @@ function onKeyDown(event) {
         // Hard drop
         while (true) {
             pentomino.position.y -= 0.25;
-            const box = new THREE.Box3().setFromObject(pentomino);
-            if (box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75 || pentominoCollides(pentomino, placed)) {
+            if (outOfBounds(pentomino) || pentominoCollides(pentomino, placed)) {
                 pentomino.position.y += 0.25;
                 break;
             }
@@ -314,8 +319,7 @@ function onKeyDown(event) {
 
     // After move, check for collision or out-of-bounds
     if (lastMotion === new THREE.Vector3()) return;
-    const box = new THREE.Box3().setFromObject(pentomino);
-    if (box.min.x >= -2.5 && box.max.x <= 2.5 && box.min.y >= -3.75 && !pentominoCollides(pentomino, placed)) return;
+    if (!outOfBounds(pentomino) && !pentominoCollides(pentomino, placed)) return;
     pentomino.position.x -= lastMotion.x;
     pentomino.position.y -= lastMotion.y;
     pentomino.rotation.z -= lastMotion.z;
@@ -336,8 +340,7 @@ function animate() {
         lastMotion = new THREE.Vector3(0, -0.25, 0);
     }
 
-    const box = new THREE.Box3().setFromObject(pentomino);
-    if (box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75 || pentominoCollides(pentomino, placed)) {
+    if (outOfBounds(pentomino) || pentominoCollides(pentomino, placed)) {
         // Revert last motion if out of grid
         pentomino.position.x -= lastMotion.x;
         pentomino.position.y -= lastMotion.y;
