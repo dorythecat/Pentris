@@ -290,19 +290,26 @@ function onKeyDown(event) {
     if (event.key === "ArrowLeft") {
         pentomino.position.x -= 0.25;
         lastMotion = new THREE.Vector3(-0.25, 0, 0);
-    }
-    else if (event.key === "ArrowRight") {
+    } else if (event.key === "ArrowRight") {
         pentomino.position.x += 0.25;
         lastMotion = new THREE.Vector3(0.25, 0, 0);
-    }
-    else if (event.key === "ArrowUp") {
+    } else if (event.key === "ArrowUp") {
         pentomino.rotation.z += Math.PI / 2;
         pentomino.rotation.z %= 2 * Math.PI;
         lastMotion = new THREE.Vector3(0, 0, Math.PI / 2);
-    }
-    else if (event.key === "ArrowDown") {
+    } else if (event.key === "ArrowDown") {
         pentomino.position.y -= 0.25;
         lastMotion = new THREE.Vector3(0, -0.25, 0);
+    } else if (event.key === " ") {
+        // Hard drop
+        while (true) {
+            pentomino.position.y -= 0.25;
+            const box = new THREE.Box3().setFromObject(pentomino);
+            if (box.min.x < -2.5 || box.max.x > 2.5 || box.min.y < -3.75 || pentominoCollides(pentomino, placed)) {
+                pentomino.position.y += 0.25;
+                break;
+            }
+        }
     }
 
     // After move, check for collision or out-of-bounds
