@@ -346,47 +346,50 @@ function animate() {
         lastMotion = new THREE.Vector3(0, -CELL_SIZE, 0);
     }
 
-    if (outOfBounds(pentomino) || pentominoCollides(pentomino, placed)) {
-        // Revert last motion if out of grid
-        pentomino.position.x -= lastMotion.x;
-        pentomino.position.y -= lastMotion.y;
-        pentomino.rotation.z -= lastMotion.z;
+    if (!outOfBounds(pentomino) && !pentominoCollides(pentomino, placed)) {
+        renderer.render(scene, camera);
+        return;
+    }
 
-        // If still colliding after revert, game over
-        if (pentominoCollides(pentomino, placed) && pentomino.position.y === 2.5) {
-            alert("Game Over!\n\nScore: " + score);
+    // Revert last motion if out of grid
+    pentomino.position.x -= lastMotion.x;
+    pentomino.position.y -= lastMotion.y;
+    pentomino.rotation.z -= lastMotion.z;
 
-            // Reset game
-            for (let mesh of placed) scene.remove(mesh);
-            placed = [];
-            scene.remove(pentomino);
-            pentomino = null;
-            lastMotion = new THREE.Vector3();
-            updateScoreText();
-            return;
-        }
+    // If still colliding after revert, game over
+    if (pentominoCollides(pentomino, placed) && pentomino.position.y === 2.5) {
+        alert("Game Over!\n\nScore: " + score);
 
-        // If the last motion was down, we need to lock the pentomino and generate a new one
-        if (lastMotion.y < 0) {
-            const lockedPentomino = pentomino.clone(); // Clone the pentomino to lock it in place
+        // Reset game
+        for (let mesh of placed) scene.remove(mesh);
+        placed = [];
+        scene.remove(pentomino);
+        pentomino = null;
+        lastMotion = new THREE.Vector3();
+        updateScoreText();
+        return;
+    }
 
-            // Reset pentomino to start position
-            pentomino.position.set(0, 2.5, 0);
-            pentomino.rotation.set(0, 0, 0);
+    // If the last motion was down, we need to lock the pentomino and generate a new one
+    if (lastMotion.y < 0) {
+        const lockedPentomino = pentomino.clone(); // Clone the pentomino to lock it in place
 
-            // Remove pentomino from scene
-            scene.remove(pentomino);
-            pentomino = null;
+        // Reset pentomino to start position
+        pentomino.position.set(0, 2.5, 0);
+        pentomino.rotation.set(0, 0, 0);
 
-            // Keep the locked pentomino in the scene
-            placed.push(lockedPentomino);
-            scene.add(lockedPentomino);
+        // Remove pentomino from scene
+        scene.remove(pentomino);
+        pentomino = null;
 
-            // Clear completed rows
-            clearRowsAndDrop(placed);
+        // Keep the locked pentomino in the scene
+        placed.push(lockedPentomino);
+        scene.add(lockedPentomino);
 
-            // Add score
-            updateScoreText(score + 10);
-        }
+        // Clear completed rows
+        clearRowsAndDrop(placed);
+
+        // Add score
+        updateScoreText(score + 10);
     } renderer.render(scene, camera);
 } renderer.setAnimationLoop(animate);
