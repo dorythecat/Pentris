@@ -210,7 +210,7 @@ const CELL_SIZE = 0.25;
 let pentominos = [];
 for (let i = 1; i <= shapes.length; i++) {
     const material = new THREE.MeshBasicMaterial({
-        color: '#' + ((1 << 24) + (i * 0xabcdef11) % 0xffffff).toString(16).slice(1)
+        color: '#' + ((1 << 24) + (i * 0xabcdef11) % 0xdddddd + 0x222222).toString(16).slice(1)
     });
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shapes[i - 1]), material);
     mesh.scale.set(CELL_SIZE, CELL_SIZE, 1);
