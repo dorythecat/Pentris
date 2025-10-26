@@ -29,6 +29,19 @@ const fShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 0)
 ]);
 
+const fMirrorShape = new THREE.Shape().setFromPoints([
+    new THREE.Vector2(),
+    new THREE.Vector2(0, 1),
+    new THREE.Vector2(1, 1),
+    new THREE.Vector2(1, 2),
+    new THREE.Vector2(0, 2),
+    new THREE.Vector2(0, 3),
+    new THREE.Vector2(-2, 3),
+    new THREE.Vector2(-2, 2),
+    new THREE.Vector2(-1, 2),
+    new THREE.Vector2(-1, 0)
+]);
+
 const iShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(0, 5),
@@ -45,6 +58,15 @@ const lShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(2, 0)
 ]);
 
+const lMirrorShape = new THREE.Shape().setFromPoints([
+    new THREE.Vector2(),
+    new THREE.Vector2(0, 4),
+    new THREE.Vector2(-1, 4),
+    new THREE.Vector2(-1, 1),
+    new THREE.Vector2(-2, 1),
+    new THREE.Vector2(-2, 0)
+]);
+
 const nShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(0, 2),
@@ -56,6 +78,17 @@ const nShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 0)
 ]);
 
+const nMirrorShape = new THREE.Shape().setFromPoints([
+    new THREE.Vector2(),
+    new THREE.Vector2(0, 2),
+    new THREE.Vector2(-1, 2),
+    new THREE.Vector2(-1, 4),
+    new THREE.Vector2(-2, 4),
+    new THREE.Vector2(-2, 1),
+    new THREE.Vector2(-1, 1),
+    new THREE.Vector2(-1, 0)
+]);
+
 const pShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(0, 3),
@@ -63,6 +96,15 @@ const pShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(2, 1),
     new THREE.Vector2(1, 1),
     new THREE.Vector2(1, 0)
+]);
+
+const pMirrorShape = new THREE.Shape().setFromPoints([
+    new THREE.Vector2(),
+    new THREE.Vector2(0, 3),
+    new THREE.Vector2(-2, 3),
+    new THREE.Vector2(-2, 1),
+    new THREE.Vector2(-1, 1),
+    new THREE.Vector2(-1, 0)
 ]);
 
 const tShape = new THREE.Shape().setFromPoints([
@@ -135,6 +177,17 @@ const yShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(1, 0)
 ]);
 
+const yMirrorShape = new THREE.Shape().setFromPoints([
+    new THREE.Vector2(),
+    new THREE.Vector2(0, 4),
+    new THREE.Vector2(-1, 4),
+    new THREE.Vector2(-1, 3),
+    new THREE.Vector2(-2, 3),
+    new THREE.Vector2(-2, 2),
+    new THREE.Vector2(-1, 2),
+    new THREE.Vector2(-1, 0)
+]);
+
 const zShape = new THREE.Shape().setFromPoints([
     new THREE.Vector2(),
     new THREE.Vector2(2, 0),
@@ -147,8 +200,9 @@ const zShape = new THREE.Shape().setFromPoints([
 ]);
 
 const shapes = [
-    fShape, iShape, lShape, nShape, pShape, tShape,
-    uShape, vShape, wShape, xShape, yShape, zShape
+    fShape, fMirrorShape, iShape, lShape, lMirrorShape, nShape, nMirrorShape,
+    pShape, pMirrorShape, tShape, uShape, vShape, wShape, xShape, yShape,
+    yMirrorShape, zShape
 ];
 
 // Generate pentominos from given shapes
