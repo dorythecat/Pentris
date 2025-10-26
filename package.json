@@ -1,9 +1,15 @@
 {
   "dependencies": {
+    "gh-pages": "^6.3.0",
     "npm": "^11.6.2",
     "three": "^0.180.0"
   },
   "devDependencies": {
     "vite": "^7.1.11"
+  },
+  "scripts": {
+    "deploy": "gh-pages -d dist",
+    "start": "vite",
+    "build": "vite build"
   }
 }
